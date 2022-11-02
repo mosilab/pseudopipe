@@ -13,17 +13,17 @@ Pseudopipe takes Illumina reads or an assemble whole genome and assembles and an
 
 ## Clone repo
 ```
-git clone https://github.com/eddykay310/demeter.git
+git clone https://github.com/mosilab/pseudopipe.git
 ```
 ## Create environments
 ```
-conda create --name bactopia_manually --file <path>/demeter/requirements/base_requirement.txt
+conda create --name bactopia_manually --file <path>/pseudopipe/requirements/base_requirement.txt
 ```
 ```
-conda create --name pseudofinder --file <path>/demeter/requirements/PF_requirement.txt
+conda create --name pseudofinder --file <path>/pseudopipe/requirements/PF_requirement.txt
 ```
 ```
-conda create --name cog_classifier --file <path>/demeter/requirements/cog_requirement.txt
+conda create --name cog_classifier --file <path>/pseudopipe/requirements/cog_requirement.txt
 ```
 
 ## Usage
@@ -33,13 +33,13 @@ conda create --name cog_classifier --file <path>/demeter/requirements/cog_requir
 Using paired-end Illumina reads
 
 ```
-bash -i path/demeter/main.sh -i <path>/[SRA gzipped fasta] -r PE -c 4 -m 8 -a U50 -t all
+bash -i path/pseudopipe/main.sh -i <path>/[SRA gzipped fasta] -r PE -c 4 -m 8 -a U50 -t all
 ```
 
 Using assembled whole genome
 
 ```
-bash -i path/demeter/main.sh -i <path>/[SRA gzipped fasta] -r PE -c 4 -m 8 -a U50 -p 5 -t all
+bash -i path/pseudopipe/main.sh -i <path>/[SRA gzipped fasta] -r PE -c 4 -m 8 -a U50 -p 5 -t all
 ```
 
 **Options**
@@ -63,7 +63,7 @@ bash -i path/demeter/main.sh -i <path>/[SRA gzipped fasta] -r PE -c 4 -m 8 -a U5
 
 ## Feedback
 
-Please file questions, bugs or ideas to the [Issue Tracker](https://github.com/eddykay310/demeter/issues)
+Please file questions, bugs or ideas to the [Issue Tracker](https://github.com/mosilab/pseudopipe/issues)
 
 ## License
 
