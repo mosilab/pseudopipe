@@ -6,6 +6,12 @@ id="$2"
 keep_transposease=$3
 predictor_type=$4
 
+# printf "seqid=$1
+# seqid_short=${seqid##*/}
+# id=$2
+# keep_transposease=$3
+# predictor_type=$4\n"
+
 # printf "seqid $1\norg tag $2\nkeep $3\n"
 
 mkdir -p "${seqid}/pseudogenome"

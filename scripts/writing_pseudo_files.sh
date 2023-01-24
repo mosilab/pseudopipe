@@ -8,36 +8,50 @@ root_base_dir=${seqid%/*}
 # echo "$root_base_dir\n"
 mkdir -p "$root_base_dir/pan_files"
 
+# printf "
+# seqid=$1
+# id=$2
+# predictor_type=$3
+# root_base_dir=${seqid%/*}"
+
 
 echo -e "\nWriting pseudogenome gff, faa and fna"
-mkdir -p "$root_base_dir/pan_files/pan-pseudogenome/gffs"
+mkdir -p "$root_base_dir/pan_files/pseudogenome/gffs"
+mkdir -p "$root_base_dir/pan_files/functional_genome/gffs"
 
 # writing gff header
-LC_ALL=C grep "^##" $seqid/rt_output/prokka_annotation/$id.gff | head -n -1 > $root_base_dir/pan_files/pan-pseudogenome/gffs/${id}.gff 
+LC_ALL=C grep "^##" $seqid/rt_output/prokka_annotation/$id.gff | head -n -1 > $root_base_dir/pan_files/pseudogenome/gffs/${id}.gff 
+LC_ALL=C grep "^##" $seqid/rt_output/prokka_annotation/$id.gff | head -n -1 > $root_base_dir/pan_files/functional_genome/gffs/${id}.gff 
 
-function DFAST_gff_writer () {
-    ids=$( grep "DF" ${seqid}/combined_pseudogenome_unique.txt | cut -d' ' -f1 | tr -d '>' )
+DFAST_gff_writer () {
+ids=$( grep "DF" ${seqid}/combined_pseudogenome_unique.txt | cut -d' ' -f1 | tr -d '>' )
 
-    # writing records from original annotation files
-    #TO-DO Find a better way to eliminate all duplicate ids that affect roary analysis
-    LC_ALL=C egrep -h "$ids" $seqid/rt_output/DFAST_output/genome.gff >> $root_base_dir/pan_files/pan-pseudogenome/gffs/${id}.gff
+# writing records from original annotation files
+#TO-DO Find a better way to eliminate all duplicate ids that affect roary analysis
+LC_ALL=C egrep -h "$ids" $seqid/rt_output/DFAST_output/genome.gff >> $root_base_dir/pan_files/pseudogenome/gffs/${id}.gff
 
-    # writing genome sequence at the end of gff file
-    sed -n '/^##FASTA/,$p' $seqid/rt_output/DFAST_output/genome.gff >> $root_base_dir/pan_files/pan-pseudogenome/gffs/${id}.gff
+# writing genome sequence at the end of gff file
+sed -n '/^##FASTA/,$p' $seqid/rt_output/DFAST_output/genome.gff >> $root_base_dir/pan_files/pseudogenome/gffs/${id}.gff
 }
 
-function prokka_gff_writer () {
-    ids1=$( grep -v "DF" ${seqid}/combined_pseudogenome_unique.txt | cut -d' ' -f1 | sed 's/PF_//' | tr -d '>' | sort )
-    #grep -v "DF" ${seqid}/combined_pseudogenome_unique.txt | cut -d' ' -f1 | sed 's/PF_//' | tr -d '>' | sort | sed 's/>//' 
-    #grep -v "DF" ${seqid}/combined_pseudogenome_unique.txt | cut -d' ' -f1 | sed 's/PF_//' | tr -d '>' #| xargs printf "%s|" #| head -c -1 
+############# prokka_gff_writer () {
+ids1=$( grep -v "DF" ${seqid}/combined_pseudogenome_unique.txt | cut -d' ' -f1 | sed 's/PF_//' | tr -d '>' | sort )
+#grep -v "DF" ${seqid}/combined_pseudogenome_unique.txt | cut -d' ' -f1 | sed 's/PF_//' | tr -d '>' | sort | sed 's/>//' 
+#grep -v "DF" ${seqid}/combined_pseudogenome_unique.txt | cut -d' ' -f1 | sed 's/PF_//' | tr -d '>' #| xargs printf "%s|" #| head -c -1 
 
-    # writing records from original annotation files
-    #TO-DO Find a better way to eliminate all duplicate ids that affect roary analysis
-    LC_ALL=C egrep -h "$ids1" $seqid/rt_output/prokka_annotation/$id.gff | sed '/#sequence/d' | sed '/>/d' >> $root_base_dir/pan_files/pan-pseudogenome/gffs/${id}.gff
+# writing records from original annotation files
+#TO-DO Find a better way to eliminate all duplicate ids that affect roary analysis
+LC_ALL=C egrep -h "$ids1" $seqid/rt_output/prokka_annotation/$id.gff | sed '/#sequence/d' | sed '/>/d' >> $root_base_dir/pan_files/pseudogenome/gffs/${id}.gff
 
-    # writing genome sequence at the end of gff file
-    sed -e '1,/^##FASTA/ d' $seqid/rt_output/prokka_annotation/$id.gff >> $root_base_dir/pan_files/pan-pseudogenome/gffs/${id}.gff
-}
+# writing genome sequence at the end of gff file
+sed -e '1,/^##FASTA/ d' $seqid/rt_output/prokka_annotation/$id.gff >> $root_base_dir/pan_files/pseudogenome/gffs/${id}.gff
+
+############## functional genome from prokka ########
+LC_ALL=C egrep -v -h "$ids1" $seqid/rt_output/prokka_annotation/$id.gff | sed '/#sequence/d' | sed '/>/d' >> $root_base_dir/pan_files/functional_genome/gffs/${id}.gff
+
+# writing genome sequence at the end of gff file
+sed -e '1,/^##FASTA/ d' $seqid/rt_output/prokka_annotation/$id.gff >> $root_base_dir/pan_files/functional_genome/gffs/${id}.gff
+
 
 # linearize fastas (prokka and DFAST)
 [[ -f $seqid/rt_output/prokka_annotation/$id.linear.faa && -f $seqid/rt_output/DFAST_output/$id.linear.cds.fna ]] && echo -e "\nLinear fasta files present\n" || \

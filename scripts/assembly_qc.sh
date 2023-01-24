@@ -39,7 +39,7 @@ if [[ "$assembly_qc_method" = "U50" ]]; then
     mv -f "$base_dir/u50" "$base_dir/assembly_qc/u50"
 else
     # QUAST
-    echo "Starting QUAT QC"
+    echo "Starting QUAST QC"
     GENOME_SIZE=${size_list[0]}
     est_ref_size=""
     if [ "${GENOME_SIZE}" = "0" ]; then
