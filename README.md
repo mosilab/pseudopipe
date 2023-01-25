@@ -64,20 +64,30 @@ Check https://github.com/cruizperez/MicrobeAnnotator for microbeannotator instal
 Using paired-end Illumina reads
 
 ```
-bash -i path/demeter/main.sh -I path/[SRA gzipped fasta] -r PE -c 4 -m 8 -a U50 -t all
+bash -i path/demeter/main.sh -i path/[SRA gzipped fasta (SRR****.fastq.gz); don't add the .fastq.gz to the input name] -r PE -c 4 -m 8 -a U50 -t all
 ```
 
 Using assembled whole genome
 
 ```
-bash -i path/demeter/main.sh -I path/[SRA gzipped fasta] -r PE -c 4 -m 8 -p 5 -t all
+bash -i path/demeter/main.sh -i path/[assembled fasta file] -r PE -c 4 -m 8 -p 5 -t all
 ```
+**NB** Pipeline must be started from stage five when using assembled genome. Scaffolding has to be skipped. Also, the genome must be put in a folder as shown below.
+....Main folder (folder ID name which is passed as input to the pipeline, eg ABN21)
+........ABN21.fna (this is the assembled genome file)
+
+If scaffolding is used in the pipeline, then the assembled genome has to placed in the directory below.
+....Main folder (folder ID name which is passed as input to the pipeline)
+........assembly
+..............skesa.fasta (this is the assembled genome file)
+
 
 **Options**
 
 ```
 Required argument
-            -i | --fastaID (Path with SRR ID)
+            -i | --fastaID (Path with SRR ID) or the input file option (-I)
+            -I | --input_file (List of reads or genome Ids
             -c | --cpus (The number of CPUs to be used in GB)
             -m | --ram (The amount of RAM to be used in GB)
 Running genome assembly
