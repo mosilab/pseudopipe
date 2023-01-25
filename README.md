@@ -73,13 +73,17 @@ Using assembled whole genome
 bash -i path/demeter/main.sh -i path/[assembled fasta file] -r PE -c 4 -m 8 -p 5 -t all
 ```
 **NB** Pipeline must be started from stage five when using assembled genome. Scaffolding has to be skipped. Also, the genome must be put in a folder as shown below.
+```
 ....Main folder (folder ID name which is passed as input to the pipeline, eg ABN21)
 ........ABN21.fna (this is the assembled genome file)
+```
 
 If scaffolding is used in the pipeline, then the assembled genome has to placed in the directory below.
+```
 ....Main folder (folder ID name which is passed as input to the pipeline)
 ........assembly
 ..............skesa.fasta (this is the assembled genome file)
+```
 
 
 **Options**
