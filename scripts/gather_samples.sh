@@ -1,8 +1,11 @@
 #!/bin/bash
 
 #### Need fastq-scan and mash
+echo $1 $2 $3
+root_dir=${1%/*}
 base_dir=$1
 runtype=$2
+app_dir=$3
 single_end=''
 [ "$runtype" = "SE" ] && single_end='true' || single_end='false'
 
@@ -17,13 +20,13 @@ attempts=3
 use_ena="false"
 no_cache="false"
 
-OPTS="--sample $base_dir/${1##*/} --min_basepairs ${min_basepairs} --min_reads ${min_reads} --min_proportion ${min_proportion}"
+OPTS="--sample $root_dir/${1##*/} --min_basepairs ${min_basepairs} --min_reads ${min_reads} --min_proportion ${min_proportion}"
 if [ "$single_end" = 'false' ]; then
-    mv -t $base_dir ${1##*/}_1.fastq.gz ${1##*/}_2.fastq.gz
-    gzip -cd $base_dir/${1##*/}_1.fastq.gz | fastq-scan > $base_dir/r1.json
+    mv -t ${1} "${1}_1.fastq.gz" "${1}_2.fastq.gz"
+    gzip -cd ${1}/${1##*/}_1.fastq.gz | fastq-scan > $base_dir/r1.json
     gzip -cd $base_dir/${1##*/}_2.fastq.gz | fastq-scan > $base_dir/r2.json
 else
-    mv ${1##*/}.fastq.gz $base_dir 
+    mv "${1}.fastq.gz" ${1} 
     gzip -cd $base_dir/${1##*/}.fastq.gz | fastq-scan > $base_dir/r.json
 fi
 
@@ -35,7 +38,7 @@ if ! reformat.sh in1=$base_dir/${1##*/}_1.fastq.gz in2=$base_dir/${1##*/}_2.fast
 else
     rm -f $base_dir/${1##*/}-paired-end-error.txt
 fi
-if ./check-fastqs.py --fq1 $base_dir/r1.json --fq2 $base_dir/r2.json ${OPTS}; then
+if $app_dir/scripts/check-fastqs.py --fq1 $base_dir/r1.json --fq2 $base_dir/r2.json ${OPTS}; then
     ERROR=1
 fi
 rm $base_dir/r1.json $base_dir/r2.json
@@ -69,7 +72,7 @@ seq_pair_sizes=`head -n1 ${GENOME_SIZE_OUTPUT}`
 size_list=(${seq_pair_sizes//\\n/ })
 ESTIMATED_GENOME_SIZE=${size_list[0]}
 if [ ${ESTIMATED_GENOME_SIZE} -gt "${max_genome_size}" ]; then
-    rm $base_dir/${GENOME_SIZE_OUTPUT}
+    rm ${GENOME_SIZE_OUTPUT}
     echo "${1##*/} estimated genome size (${ESTIMATED_GENOME_SIZE} bp) exceeds the maximum
             allowed genome size (${max_genome_size} bp). If this is unexpected, please
             investigate ${1##*/} to determine a cause (e.g. metagenomic, contaminants, etc...).
@@ -77,7 +80,7 @@ if [ ${ESTIMATED_GENOME_SIZE} -gt "${max_genome_size}" ]; then
             of ${1##*/} will be discontinued." | \
     sed 's/^\\s*//' > $base_dir/${1##*/}-genome-size-error.txt
 elif [ ${ESTIMATED_GENOME_SIZE} -lt "${min_genome_size}" ]; then
-    rm $base_dir/${GENOME_SIZE_OUTPUT}
+    rm ${GENOME_SIZE_OUTPUT}
     echo "${1##*/} estimated genome size (${ESTIMATED_GENOME_SIZE} bp) is less than the minimum
             allowed genome size (${min_genome_size} bp). If this is unexpected, please
             investigate ${1##*/} to determine a cause (e.g. metagenomic, contaminants, etc...).

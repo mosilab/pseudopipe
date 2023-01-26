@@ -11,7 +11,7 @@ echo "Using $cpus threads"
 assembly_qc_method=$3
 [[ $assembly_qc_method ]] && u50=$assembly_qc_method || u50=''
 # id="${4}${seqid:3}"
-id="${4}
+id="${4}"
 
 GENOME_SIZE_OUTPUT="$base_dir/${seqid}-genome-size.txt"
 seq_pair_sizes=`head -n1 ${GENOME_SIZE_OUTPUT}`
@@ -69,8 +69,7 @@ if [ -f "$base_dir/assembly_qc/u50/out_sorted_Assembly_Statistics.txt" ]; then
         echo "Assembled genome is not reliable for further analysis. Genome completeness is < 95" | tee -a "$base_dir/assembly_qc_check.txt"
 
     else
-        echo "Assembled genome may suffer from a diverse range of issues eg: substantial assembly or gene calling errors; lineage\
-            -specific gene loss" | tee -a "$base_dir/assembly_qc_check.txt"
+        echo "Assembled genome may suffer from a diverse range of issues eg: substantial assembly or gene calling errors; lineage-specific gene loss" | tee -a "$base_dir/assembly_qc_check.txt"
     fi
 else 
     echo "U50 was unsuccessful. Check u50.stderr.txt and u50.stdout.txt file for more detail"
